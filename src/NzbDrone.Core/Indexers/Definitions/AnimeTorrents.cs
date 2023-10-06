@@ -281,6 +281,7 @@ namespace NzbDrone.Core.Indexers.Definitions
             foreach (var (row, index) in rows.Skip(1).Select((v, i) => (v, i)))
             {
                 var downloadVolumeFactor = row.QuerySelector("img[alt=\"Gold Torrent\"]") != null ? 0 : row.QuerySelector("img[alt=\"Silver Torrent\"]") != null ? 0.5 : 1;
+                var uploadVolumeFactor = row.QuerySelector("img[alt=\"2x Multiplier Torrent\"]") != null ? 2 : 1;
 
                 // skip non-freeleech results when freeleech only is set
                 if (_settings.FreeleechOnly && downloadVolumeFactor != 0)
@@ -330,7 +331,7 @@ namespace NzbDrone.Core.Indexers.Definitions
                     Peers = ParseUtil.CoerceInt(connections[1]) + seeders,
                     Grabs = ParseUtil.CoerceInt(connections[2]),
                     DownloadVolumeFactor = downloadVolumeFactor,
-                    UploadVolumeFactor = 1,
+                    UploadVolumeFactor = uploadVolumeFactor,
                     Genres = row.QuerySelectorAll("td:nth-of-type(2) a.tortags").Select(t => t.TextContent.Trim()).ToList()
                 };
 
